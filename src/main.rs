@@ -1,6 +1,7 @@
 // TODO get editline C interop working
 
 use std::io;
+use std::str;
 #[macro_use]
 extern crate nom;
 
@@ -13,6 +14,16 @@ pub struct NomAstT {
   pub children: Vec<NomAstT>,
 }
 
+// broken
+named!(s_expr<&str,&str>,
+    do_parse!(
+      char!('(') >>
+      inner: many1!(char!('a')) >>
+      char!(')') >>
+      (inner.iter().collect())
+    )
+);
+
 fn main () {
   println!("Lispy Version 0.0.0.0.1");
   println!("Press Ctrl+c to Exit\n");
@@ -24,7 +35,8 @@ fn main () {
     match io::stdin().read_line(&mut input) {
       Ok(n) => {
         println!("{} bytes read", n);
-        println!("input {}", input);
+        let res = s_expr(&input);
+        println!("response {:?}", res);
       }
       Err(error) => println!("error: {}", error),
     }

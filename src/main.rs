@@ -15,13 +15,12 @@ pub struct NomAstT {
   pub children: Vec<NomAstT>,
 }
 
-// broken
-named!(s_expr<&str,String>,
+named!(s_expr<&str,Vec<&str>>,
     do_parse!(
       char!('(') >>
-      inner: many1!(tag_s!("a")) >>
+      inner: many0!(ws!(alt!(tag_s!("b") | tag_s!("a")))) >>
       char!(')') >>
-      (inner.join(""))
+      (inner)
     )
 );
 
@@ -29,10 +28,9 @@ fn main () {
   println!("Lispy Version 0.0.0.0.1");
   println!("Press Ctrl+c to Exit\n");
 
-  let mut input = String::new();
-
   loop {
     print!("lispy> ");
+    let mut input = String::new();
     io::stdout().flush().unwrap();
     match io::stdin().read_line(&mut input) {
       Ok(n) => {

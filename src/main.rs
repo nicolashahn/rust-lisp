@@ -15,13 +15,24 @@ pub struct NomAstT {
   pub children: Vec<NomAstT>,
 }
 
+named!(token<&str, Vec<&str>>,
+       ws!(many0!(alt!(tag_s!("b") | tag_s!("a"))))
+    );
+
 named!(s_expr<&str,Vec<&str>>,
-    do_parse!(
-      char!('(') >>
-      inner: many0!(ws!(alt!(tag_s!("b") | tag_s!("a")))) >>
-      char!(')') >>
-      (inner)
-    )
+       delimited!(tag_s!("("),
+                      token,
+                      tag_s!(")")
+       )
+
+
+
+    // do_parse!(
+    //   char!('(') >>
+    //   inner: many0!(ws!(alt!(tag_s!("b") | tag_s!("a")))) >>
+    //   char!(')') >>
+    //   (inner)
+    // )
 );
 
 fn main () {

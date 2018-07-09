@@ -1,6 +1,7 @@
 // TODO get editline C interop working
 
 use std::io;
+use std::io::prelude::*;
 use std::str;
 #[macro_use]
 extern crate nom;
@@ -15,12 +16,12 @@ pub struct NomAstT {
 }
 
 // broken
-named!(s_expr<&str,&str>,
+named!(s_expr<&str,String>,
     do_parse!(
       char!('(') >>
-      inner: many1!(char!('a')) >>
+      inner: many1!(tag_s!("a")) >>
       char!(')') >>
-      (inner.iter().collect())
+      (inner.join(""))
     )
 );
 
@@ -32,6 +33,7 @@ fn main () {
 
   loop {
     print!("lispy> ");
+    io::stdout().flush().unwrap();
     match io::stdin().read_line(&mut input) {
       Ok(n) => {
         println!("{} bytes read", n);
